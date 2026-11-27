@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CrashGuard</string>
+    <string name="app_tagline">Automatic road-crash detection &amp; emergency alert</string>
+
+    <!-- Disclaimers (Spec section 16) -->
+    <string name="disclaimer_primary">CrashGuard is a safety-assistance tool. It does not replace emergency services, professional medical care, or vehicle safety systems.\n\nIn a life-threatening emergency, call 112 immediately.</string>
+    <string name="disclaimer_secondary">Automatic crash detection may not detect every crash and may occasionally produce false alerts. Keep your phone charged, enabled, and securely mounted while driving.</string>
+
+    <!-- Notification channels -->
+    <string name="channel_trip">Active Trip Protection</string>
+    <string name="channel_crash">Crash Check-in Alerts</string>
+    <string name="channel_sos">Emergency SOS &amp; Location Sharing</string>
+    <string name="channel_status">Safety &amp; Permission Status</string>
+
+    <!-- Notifications -->
+    <string name="notif_trip_confirming">Trip detected — confirming GPS movement…</string>
+    <string name="notif_trip_active">Crash protection active</string>
+    <string name="notif_trip_active_sim">Crash protection active (Simulated trip)</string>
+    <string name="notif_trip_started_at">Trip started at %1$s</string>
+    <string name="notif_tap_to_open">Tap to open CrashGuard</string>
+    <string name="action_stop_trip">End trip</string>
+    <string name="notif_sharing_title">Emergency location sharing active</string>
+    <string name="notif_sharing_body">Sharing live location with emergency contacts. Tap to manage or stop.</string>
+
+    <string name="role_question">Are you driving?</string>
+    <string name="role_question_body">Tap to confirm your role for this trip</string>
+    <string name="role_driver">Yes, I’m driving</string>
+    <string name="role_passenger">I’m a passenger</string>
+    <string name="role_not_driving">Not driving</string>
+
+    <string name="soft_check_title">Unusual impact detected — Are you okay?</string>
+    <string name="soft_check_body">Tap “Need help” to alert your emergency contacts.</string>
+
+    <string name="warn_location_title">Location unavailable</string>
+    <string name="warn_location_body">Grant location permission so CrashGuard can verify driving trips and share your crash location.</string>
+    <string name="warn_sensor_title">Motion sensor unavailable</string>
+    <string name="warn_sensor_body">Accelerometer not detected. Automatic crash detection is limited; manual SOS remains available.</string>
+
+    <!-- Permissions -->
+    <string name="perm_notifications">Notifications</string>
+    <string name="perm_notifications_why">Required to show the crash check-in countdown and trip protection status.</string>
+    <string name="perm_notifications_limit">Without notifications, crash alerts may not appear when the app is in the background.</string>
+
+    <string name="perm_location">Precise Location</string>
+    <string name="perm_location_why">Confirms vehicle movement during trips and shares your location with emergency contacts during a crash.</string>
+    <string name="perm_location_limit">Without location, automatic trip confirmation and live location links are disabled.</string>
+
+    <string name="perm_activity">Physical Activity Recognition</string>
+    <string name="perm_activity_why">Detects when you enter or exit a moving vehicle so protection starts and stops automatically.</string>
+    <string name="perm_activity_limit">Without activity recognition, use Manual Driving Mode to start trip protection.</string>
+
+    <string name="perm_sms">Send SMS (Optional)</string>
+    <string name="perm_sms_why">Automatically sends emergency SMS alerts with your Google Maps link when you do not respond.</string>
+    <string name="perm_sms_limit">Without SMS permission, alerts open in your SMS app for one-tap sending.</string>
+
+    <string name="perm_call">Direct Emergency Call (Optional)</string>
+    <string name="perm_call_why">Places an automated call to 112 after the post-crash countdown if enabled.</string>
+    <string name="perm_call_limit">Without call permission, tapping Call 112 opens the phone dialer with 112 pre-filled.</string>
+
+    <string name="perm_bluetooth">Bluetooth Car Detection (Optional)</string>
+    <string name="perm_bluetooth_why">Recognizes car audio connections to boost driving-detection confidence.</string>
+    <string name="perm_bluetooth_limit">Without Bluetooth permission, CrashGuard asks “Are you driving?” when a trip starts.</string>
+
+    <!-- Onboarding -->
+    <string name="onboard_welcome_title">Road safety that checks on you</string>
+    <string name="onboard_welcome_body">CrashGuard detects a likely road crash while you drive, gives you 45 seconds to confirm you are safe, and alerts your trusted contacts with your location if you do not respond.</string>
+    <string name="onboard_privacy_title">Privacy by design</string>
+    <string name="onboard_privacy_body">• No continuous background tracking when not driving.\n• No camera or microphone recording.\n• Medical profile is encrypted on your device with Android Keystore.\n• Location sharing runs only during an active emergency and stops after 15 minutes or whenever you tap Stop.</string>
+    <string name="onboard_perm_title">Enable automatic crash protection</string>
+    <string name="onboard_perm_body">Grant permissions one at a time. You can review or revoke any permission at any time in Privacy &amp; Permissions.</string>
+    <string name="onboard_grant">Grant</string>
+    <string name="onboard_granted">Granted</string>
+    <string name="onboard_next">Continue</string>
+    <string name="onboard_back">Back</string>
+    <string name="onboard_finish">Enable Crash Protection &amp; Start</string>
+    <string name="onboard_contacts_hint">Add at least one emergency contact on the next screen so alerts have a recipient.</string>
+
+    <!-- Home -->
+    <string name="home_protection_on">Crash protection: ON</string>
+    <string name="home_protection_off">Crash protection: OFF</string>
+    <string name="home_protection_sub_on">Automatic trip detection armed</string>
+    <string name="home_protection_sub_off">Turn on to monitor driving trips</string>
+    <string name="home_trip_not_driving">Trip status: Not driving</string>
+    <string name="home_trip_confirming">Trip status: Confirming movement (%1$.0f km/h)</string>
+    <string name="home_trip_active">Trip active • %1$.0f km/h • %2$.2f km</string>
+    <string name="home_start_manual_trip">Start driving mode</string>
+    <string name="home_start_sim_trip">Start simulated trip</string>
+    <string name="home_stop_trip">Stop trip</string>
+    <string name="home_contacts_count">Emergency contacts: %1$d configured</string>
+    <string name="home_contacts_sub">Up to 5 trusted contacts receive crash alerts</string>
+    <string name="home_test_sos">Test SOS</string>
+    <string name="home_test_sos_sub">Send a labeled test alert or run demo simulation</string>
+    <string name="home_manual_sos">Trigger Emergency SOS</string>
+    <string name="home_profile">My emergency profile</string>
+    <string name="home_profile_sub">Blood group, allergies, medical notes (encrypted)</string>
+    <string name="home_history">Trip history &amp; incident log</string>
+    <string name="home_history_sub">Past trips, crash alerts, and exportable incident reports</string>
+    <string name="home_privacy">Privacy &amp; permissions</string>
+    <string name="home_privacy_sub">Readiness check, battery saver, SMS &amp; language settings</string>
+    <string name="home_active_emergency_banner">Emergency active — tap to open SOS screen</string>
+    <string name="home_battery_warning">Battery optimization may delay emergency alerts.</string>
+    <string name="home_battery_fix">Fix</string>
+    <string name="home_missing_perm_warning">Critical permission missing — crash protection is limited.</string>
+    <string name="home_passenger_note">Passenger mode: automatic crash escalation paused. Manual SOS remains active.</string>
+
+    <!-- Crash Alert -->
+    <string name="crash_title">POSSIBLE CRASH DETECTED</string>
+    <string name="crash_are_you_okay">Are you okay?</string>
+    <string name="crash_countdown_copy">We will alert your emergency contacts in %1$d seconds if you do not respond.</string>
+    <string name="crash_countdown_notif">Alerting emergency contacts in %1$ds — tap if you are okay</string>
+    <string name="crash_im_okay">I’m okay</string>
+    <string name="crash_need_help">Need help</string>
+    <string name="crash_false_alarm">False alarm</string>
+    <string name="crash_locating">Acquiring GPS location…</string>
+    <string name="crash_location_ready">GPS location ready (%1$s)</string>
+    <string name="crash_location_last_known">Using last known location (%1$s)</string>
+    <string name="crash_location_unavailable">GPS location unavailable — will retry</string>
+
+    <!-- SOS Screen -->
+    <string name="sos_title">Emergency assistance</string>
+    <string name="sos_subtitle_shared">Location shared with emergency contacts.</string>
+    <string name="sos_subtitle_no_contacts">No emergency contacts configured — call 112 below.</string>
+    <string name="sos_call_112">CALL 112</string>
+    <string name="sos_autocall_banner">Calling 112 automatically in %1$ds…</string>
+    <string name="sos_cancel_autocall">Cancel auto-call</string>
+    <string name="sos_sharing_active">Live location sharing active (updates every 20s)</string>
+    <string name="sos_sharing_stopped">Location sharing stopped</string>
+    <string name="sos_stop_sharing">Stop sharing</string>
+    <string name="sos_extend_sharing">+15 min</string>
+    <string name="sos_send_sms_app">Send alert via SMS app</string>
+    <string name="sos_share_report">Export / Share report</string>
+    <string name="sos_quick_notes">Add quick note</string>
+    <string name="sos_im_safe_close">I am safe — close incident</string>
+    <string name="sos_contacts_status">Contact alert delivery</string>
+
+    <string name="note_injured">I am injured.</string>
+    <string name="note_other_injured">Someone else is injured.</string>
+    <string name="note_fire">Vehicle is on fire.</string>
+    <string name="note_trapped">I am trapped.</string>
+    <string name="note_hazard">Traffic hazard.</string>
+    <string name="note_ambulance">Need ambulance.</string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">Emergency contacts</string>
+    <string name="contacts_add">Add emergency contact</string>
+    <string name="contacts_pick">Pick from phone contacts</string>
+    <string name="contacts_name">Contact name</string>
+    <string name="contacts_phone">Phone number (+91…)</string>
+    <string name="contacts_primary">Primary contact</string>
+    <string name="contacts_save">Save contact</string>
+    <string name="contacts_limit_reached">Maximum of 5 emergency contacts configured.</string>
+    <string name="contacts_empty">No emergency contacts yet. Add up to 5 trusted family members or friends.</string>
+    <string name="contacts_call">Call</string>
+    <string name="contacts_delete">Delete</string>
+    <string name="contacts_make_primary">Make primary</string>
+
+    <!-- Profile -->
+    <string name="profile_title">My emergency profile</string>
+    <string name="profile_encrypted_note">Medical fields are encrypted locally using Android Keystore. Choose which fields are included in emergency alerts. Full medical details are never shown on the lock screen.</string>
+    <string name="profile_name">Full name</string>
+    <string name="profile_phone">Your phone number</string>
+    <string name="profile_vehicle">Primary vehicle type</string>
+    <string name="vehicle_car">Car</string>
+    <string name="vehicle_two_wheeler">Two-wheeler</string>
+    <string name="vehicle_other">Other</string>
+    <string name="profile_blood">Blood group (e.g. O+, B+)</string>
+    <string name="profile_allergies">Allergies</string>
+    <string name="profile_conditions">Chronic conditions</string>
+    <string name="profile_medications">Current medications</string>
+    <string name="profile_insurance">Motor/Health insurance details (optional)</string>
+    <string name="profile_abha">ABHA ID (optional, only if you choose to enter)</string>
+    <string name="profile_include_in_alert">Include in emergency alert</string>
+    <string name="profile_save">Save profile</string>
+    <string name="profile_saved">Emergency profile saved &amp; encrypted</string>
+
+    <!-- Test & Simulation -->
+    <string name="test_title">Test SOS &amp; Demo Simulator</string>
+    <string name="test_sos_card_title">Send a safe Test SOS alert</string>
+    <string name="test_sos_card_body">Sends a clearly labeled message to your selected contacts: “TEST ALERT — No emergency. Please ignore.” Logged separately from real incidents.</string>
+    <string name="test_send_button">Send Test Alert Now</string>
+    <string name="test_sent_toast">Test alert created and dispatched</string>
+    <string name="sim_title">Developer Sensor &amp; Crash Simulation</string>
+    <string name="sim_body">Use these controls during tomorrow’s demo to validate every detection stage and confidence band without a real vehicle impact.</string>
+    <string name="sim_low">Simulate low-confidence impact (Score 30 — logged only)</string>
+    <string name="sim_medium">Simulate medium-confidence impact (Score 50 — notification)</string>
+    <string name="sim_high">Simulate high-confidence crash (Score 90 — 45s full-screen alert)</string>
+    <string name="sim_unresponsive">Simulate unresponsive driver (10s countdown → auto-escalate)</string>
+    <string name="sim_need_help">Simulate crash + user taps “Need help”</string>
+
+    <!-- History & Incident Report -->
+    <string name="history_title">Trips &amp; Incidents</string>
+    <string name="history_tab_incidents">Incidents</string>
+    <string name="history_tab_trips">Trips</string>
+    <string name="history_empty_incidents">No incidents recorded.</string>
+    <string name="history_empty_trips">No trips recorded yet.</string>
+    <string name="incident_report_title">Incident Report</string>
+    <string name="incident_share_text">Share Plain Text</string>
+    <string name="incident_share_json">Share JSON</string>
+
+    <!-- Privacy & Settings -->
+    <string name="privacy_title">Privacy, Permissions &amp; Settings</string>
+    <string name="privacy_language">App language</string>
+    <string name="lang_en">English</string>
+    <string name="lang_hi">हिन्दी (Hindi)</string>
+    <string name="lang_mr">मराठी (Marathi)</string>
+    <string name="privacy_sms_toggle">Automatic SMS fallback to emergency contacts</string>
+    <string name="privacy_autocall_toggle">Auto-call 112 after 10s countdown when unresponsive</string>
+    <string name="privacy_dev_toggle">Show developer crash simulator on Home screen</string>
+    <string name="privacy_open_settings">Open App Settings</string>
+    <string name="privacy_full_screen_perm">Full-screen crash alert permission</string>
+    <string name="privacy_battery_opt">Unrestricted battery usage (prevents delayed alerts)</string>
+    <string name="privacy_data_collected">Data minimization guarantee</string>
+    <string name="privacy_delete_history">Clear all local trip &amp; incident history</string>
+    <string name="common_back">Back</string>
+</resources>

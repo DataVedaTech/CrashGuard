@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">क्रैशगार्ड (CrashGuard)</string>
+    <string name="app_tagline">स्वचालित सड़क दुर्घटना पहचान और आपातकालीन अलर्ट</string>
+
+    <string name="disclaimer_primary">क्रैशगार्ड एक सुरक्षा-सहायता ऐप है। यह आपातकालीन सेवाओं, चिकित्सा देखभाल या वाहन सुरक्षा प्रणालियों का विकल्प नहीं है।\n\nजानलेवा आपात स्थिति में तुरंत 112 पर कॉल करें।</string>
+    <string name="disclaimer_secondary">स्वचालित दुर्घटना पहचान हर दुर्घटना का पता नहीं लगा सकती और कभी-कभी गलत अलर्ट दे सकती है। ड्राइविंग करते समय फ़ोन चार्ज और सुरक्षित रूप से माउंट रखें।</string>
+
+    <string name="channel_trip">सक्रिय यात्रा सुरक्षा</string>
+    <string name="channel_crash">दुर्घटना जांच अलर्ट</string>
+    <string name="channel_sos">आपातकालीन SOS और लाइव लोकेशन</string>
+    <string name="channel_status">सुरक्षा और अनुमति स्थिति</string>
+
+    <string name="notif_trip_confirming">यात्रा मिली — GPS गति की पुष्टि हो रही है…</string>
+    <string name="notif_trip_active">क्रैश सुरक्षा सक्रिय है</string>
+    <string name="notif_trip_active_sim">क्रैश सुरक्षा सक्रिय (सिम्युलेटेड यात्रा)</string>
+    <string name="notif_trip_started_at">यात्रा शुरू: %1$s</string>
+    <string name="notif_tap_to_open">क्रैशगार्ड खोलने के लिए टैप करें</string>
+    <string name="action_stop_trip">यात्रा समाप्त करें</string>
+    <string name="notif_sharing_title">आपातकालीन लोकेशन शेयरिंग सक्रिय</string>
+    <string name="notif_sharing_body">आपातकालीन संपर्कों के साथ लाइव लोकेशन साझा की जा रही है।</string>
+
+    <string name="role_question">क्या आप गाड़ी चला रहे हैं?</string>
+    <string name="role_question_body">इस यात्रा के लिए अपनी भूमिका चुनें</string>
+    <string name="role_driver">हाँ, मैं चला रहा/रही हूँ</string>
+    <string name="role_passenger">मैं यात्री हूँ</string>
+    <string name="role_not_driving">ड्राइविंग नहीं</string>
+
+    <string name="soft_check_title">असामान्य झटका महसूस हुआ — क्या आप ठीक हैं?</string>
+    <string name="soft_check_body">आपातकालीन संपर्कों को सूचित करने के लिए “मदद चाहिए” दबाएँ।</string>
+
+    <string name="warn_location_title">लोकेशन अनुपलब्ध</string>
+    <string name="warn_location_body">यात्रा पुष्टि और दुर्घटना लोकेशन साझा करने के लिए लोकेशन अनुमति दें।</string>
+    <string name="warn_sensor_title">मोशन सेंसर अनुपलब्ध</string>
+    <string name="warn_sensor_body">एक्सेलेरोमीटर उपलब्ध नहीं है। मैनुअल SOS उपलब्ध रहेगा।</string>
+
+    <string name="perm_notifications">सूचनाएँ (Notifications)</string>
+    <string name="perm_notifications_why">दुर्घटना काउंटडाउन और यात्रा सुरक्षा स्थिति दिखाने के लिए आवश्यक।</string>
+    <string name="perm_notifications_limit">इसके बिना बैकग्राउंड में अलर्ट दिखाई नहीं देंगे।</string>
+
+    <string name="perm_location">सटीक लोकेशन (Location)</string>
+    <string name="perm_location_why">यात्रा गति की पुष्टि करने और आपात स्थिति में आपकी लोकेशन भेजने के लिए।</string>
+    <string name="perm_location_limit">लोकेशन के बिना लाइव मैप लिंक काम नहीं करेगा।</string>
+
+    <string name="perm_activity">गतिविधि पहचान (Activity Recognition)</string>
+    <string name="perm_activity_why">वाहन में बैठने और उतरने का स्वतः पता लगाने के लिए।</string>
+    <string name="perm_activity_limit">इसके बिना मैनुअल ड्राइविंग मोड का उपयोग करें।</string>
+
+    <string name="perm_sms">SMS भेजें (वैकल्पिक)</string>
+    <string name="perm_sms_why">प्रतिक्रिया न मिलने पर आपातकालीन संपर्कों को स्वतः SMS भेजने के लिए।</string>
+    <string name="perm_sms_limit">इसके बिना SMS ऐप में संदेश तैयार खुलेगा।</string>
+
+    <string name="perm_call">सीधी आपातकालीन कॉल (वैकल्पिक)</string>
+    <string name="perm_call_why">काउंटडाउन के बाद 112 पर स्वतः कॉल करने के लिए।</string>
+    <string name="perm_call_limit">इसके बिना 112 डायलर में खुलेगा।</string>
+
+    <string name="perm_bluetooth">ब्लूटूथ कार पहचान (वैकल्पिक)</string>
+    <string name="perm_bluetooth_why">कार ऑडियो कनेक्शन से ड्राइविंग पहचान की सटीकता बढ़ाने के लिए।</string>
+    <string name="perm_bluetooth_limit">इसके बिना ऐप पूछेगा कि क्या आप ड्राइव कर रहे हैं।</string>
+
+    <string name="onboard_welcome_title">सड़क सुरक्षा जो आपका ध्यान रखे</string>
+    <string name="onboard_welcome_body">क्रैशगार्ड ड्राइविंग के दौरान संभावित दुर्घटना का पता लगाता है, आपको 45 सेकंड का समय देता है, और जवाब न मिलने पर आपके विश्वसनीय संपर्कों को आपकी लोकेशन भेजता है।</string>
+    <string name="onboard_privacy_title">गोपनीयता सर्वोपरि</string>
+    <string name="onboard_privacy_body">• ड्राइविंग के बाहर कोई लोकेशन ट्रैकिंग नहीं।\n• कैमरा या माइक्रोफ़ोन रिकॉर्डिंग नहीं।\n• मेडिकल जानकारी डिवाइस पर एन्क्रिप्टेड रहती है।\n• लोकेशन शेयरिंग केवल आपात स्थिति में 15 मिनट तक चलती है।</string>
+    <string name="onboard_perm_title">स्वचालित क्रैश सुरक्षा सक्षम करें</string>
+    <string name="onboard_perm_body">एक-एक करके अनुमतियाँ दें। आप इन्हें कभी भी बदल सकते हैं।</string>
+    <string name="onboard_grant">अनुमति दें</string>
+    <string name="onboard_granted">अनुमति मिली</string>
+    <string name="onboard_next">आगे बढ़ें</string>
+    <string name="onboard_back">पीछे</string>
+    <string name="onboard_finish">क्रैश सुरक्षा चालू करें</string>
+    <string name="onboard_contacts_hint">अगली स्क्रीन पर कम से कम एक आपातकालीन संपर्क जोड़ें।</string>
+
+    <string name="home_protection_on">क्रैश सुरक्षा: चालू (ON)</string>
+    <string name="home_protection_off">क्रैश सुरक्षा: बंद (OFF)</string>
+    <string name="home_protection_sub_on">स्वचालित यात्रा पहचान सक्रिय</string>
+    <string name="home_protection_sub_off">यात्रा निगरानी के लिए चालू करें</string>
+    <string name="home_trip_not_driving">यात्रा स्थिति: ड्राइविंग नहीं</string>
+    <string name="home_trip_confirming">यात्रा स्थिति: गति की पुष्टि (%1$.0f km/h)</string>
+    <string name="home_trip_active">यात्रा सक्रिय • %1$.0f km/h • %2$.2f km</string>
+    <string name="home_start_manual_trip">ड्राइविंग मोड शुरू करें</string>
+    <string name="home_start_sim_trip">सिम्युलेटेड यात्रा शुरू करें</string>
+    <string name="home_stop_trip">यात्रा रोकें</string>
+    <string name="home_contacts_count">आपातकालीन संपर्क: %1$d जुड़े हैं</string>
+    <string name="home_contacts_sub">अधिकतम 5 विश्वसनीय संपर्कों को अलर्ट मिलेगा</string>
+    <string name="home_test_sos">टेस्ट SOS</string>
+    <string name="home_test_sos_sub">टेस्ट अलर्ट भेजें या डेमो सिम्युलेशन चलाएँ</string>
+    <string name="home_manual_sos">आपातकालीन SOS भेजें</string>
+    <string name="home_profile">मेरी आपातकालीन प्रोफ़ाइल</string>
+    <string name="home_profile_sub">ब्लड ग्रुप, एलर्जी, मेडिकल विवरण (एन्क्रिप्टेड)</string>
+    <string name="home_history">यात्रा इतिहास और घटना लॉग</string>
+    <string name="home_history_sub">पिछली यात्राएँ और दुर्घटना रिपोर्ट</string>
+    <string name="home_privacy">गोपनीयता और अनुमतियाँ</string>
+    <string name="home_privacy_sub">अनुमति स्थिति, बैटरी सेवर, SMS और भाषा</string>
+    <string name="home_active_emergency_banner">आपातकाल सक्रिय — SOS स्क्रीन खोलने के लिए टैप करें</string>
+    <string name="home_battery_warning">बैटरी ऑप्टिमाइज़ेशन आपातकालीन अलर्ट में देरी कर सकता है।</string>
+    <string name="home_battery_fix">ठीक करें</string>
+    <string name="home_missing_perm_warning">आवश्यक अनुमति अधूरी — सुरक्षा सीमित है।</string>
+    <string name="home_passenger_note">यात्री मोड: स्वचालित अलर्ट बंद है, मैनुअल SOS चालू है।</string>
+
+    <string name="crash_title">संभावित दुर्घटना का पता चला</string>
+    <string name="crash_are_you_okay">क्या आप ठीक हैं?</string>
+    <string name="crash_countdown_copy">यदि आप जवाब नहीं देते हैं तो हम %1$d सेकंड में आपके आपातकालीन संपर्कों को सूचित करेंगे।</string>
+    <string name="crash_countdown_notif">%1$d सेकंड में संपर्कों को अलर्ट भेजा जाएगा — ठीक हैं तो टैप करें</string>
+    <string name="crash_im_okay">मैं ठीक हूँ</string>
+    <string name="crash_need_help">मदद चाहिए</string>
+    <string name="crash_false_alarm">गलत अलार्म</string>
+    <string name="crash_locating">GPS लोकेशन प्राप्त की जा रही है…</string>
+    <string name="crash_location_ready">GPS लोकेशन तैयार (%1$s)</string>
+    <string name="crash_location_last_known">अंतिम ज्ञात लोकेशन का उपयोग (%1$s)</string>
+    <string name="crash_location_unavailable">GPS लोकेशन अनुपलब्ध — पुनः प्रयास जारी</string>
+
+    <string name="sos_title">आपातकालीन सहायता</string>
+    <string name="sos_subtitle_shared">आपातकालीन संपर्कों के साथ लोकेशन साझा की गई।</string>
+    <string name="sos_subtitle_no_contacts">कोई संपर्क नहीं जुड़ा — नीचे 112 पर कॉल करें।</string>
+    <string name="sos_call_112">112 पर कॉल करें</string>
+    <string name="sos_autocall_banner">%1$d सेकंड में 112 पर स्वतः कॉल हो रही है…</string>
+    <string name="sos_cancel_autocall">ऑटो-कॉल रद्द करें</string>
+    <string name="sos_sharing_active">लाइव लोकेशन शेयरिंग सक्रिय है</string>
+    <string name="sos_sharing_stopped">लोकेशन शेयरिंग बंद</string>
+    <string name="sos_stop_sharing">शेयरिंग रोकें</string>
+    <string name="sos_extend_sharing">+15 मिनट</string>
+    <string name="sos_send_sms_app">SMS ऐप से अलर्ट भेजें</string>
+    <string name="sos_share_report">रिपोर्ट साझा करें</string>
+    <string name="sos_quick_notes">त्वरित नोट जोड़ें</string>
+    <string name="sos_im_safe_close">मैं सुरक्षित हूँ — घटना बंद करें</string>
+    <string name="sos_contacts_status">संपर्क अलर्ट स्थिति</string>
+
+    <string name="note_injured">मैं घायल हूँ।</string>
+    <string name="note_other_injured">कोई अन्य घायल है।</string>
+    <string name="note_fire">वाहन में आग लगी है।</string>
+    <string name="note_trapped">मैं फँसा/फँसी हुआ हूँ।</string>
+    <string name="note_hazard">ट्रैफ़िक खतरा।</string>
+    <string name="note_ambulance">एम्बुलेंस चाहिए।</string>
+
+    <string name="contacts_title">आपातकालीन संपर्क</string>
+    <string name="contacts_add">आपातकालीन संपर्क जोड़ें</string>
+    <string name="contacts_pick">फ़ोन संपर्कों से चुनें</string>
+    <string name="contacts_name">संपर्क का नाम</string>
+    <string name="contacts_phone">फ़ोन नंबर (+91…)</string>
+    <string name="contacts_primary">प्राथमिक संपर्क</string>
+    <string name="contacts_save">संपर्क सहेजें</string>
+    <string name="contacts_limit_reached">अधिकतम 5 आपातकालीन संपर्क जोड़े जा सकते हैं।</string>
+    <string name="contacts_empty">अभी कोई संपर्क नहीं है। अधिकतम 5 विश्वसनीय संपर्क जोड़ें।</string>
+    <string name="contacts_call">कॉल</string>
+    <string name="contacts_delete">हटाएँ</string>
+    <string name="contacts_make_primary">प्राथमिक बनाएँ</string>
+
+    <string name="profile_title">मेरी आपातकालीन प्रोफ़ाइल</string>
+    <string name="profile_encrypted_note">मेडिकल जानकारी डिवाइस पर एन्क्रिप्टेड रहती है। चुनें कि अलर्ट में कौन-सा विवरण शामिल हो।</string>
+    <string name="profile_name">पूरा नाम</string>
+    <string name="profile_phone">आपका फ़ोन नंबर</string>
+    <string name="profile_vehicle">मुख्य वाहन प्रकार</string>
+    <string name="vehicle_car">कार</string>
+    <string name="vehicle_two_wheeler">दोपहिया</string>
+    <string name="vehicle_other">अन्य</string>
+    <string name="profile_blood">ब्लड ग्रुप (जैसे O+, B+)</string>
+    <string name="profile_allergies">एलर्जी</string>
+    <string name="profile_conditions">पुरानी बीमारियाँ</string>
+    <string name="profile_medications">दवाइयाँ</string>
+    <string name="profile_insurance">बीमा विवरण (वैकल्पिक)</string>
+    <string name="profile_abha">ABHA ID (वैकल्पिक)</string>
+    <string name="profile_include_in_alert">आपातकालीन अलर्ट में शामिल करें</string>
+    <string name="profile_save">प्रोफ़ाइल सहेजें</string>
+    <string name="profile_saved">प्रोफ़ाइल सहेजी और एन्क्रिप्ट की गई</string>
+
+    <string name="test_title">टेस्ट SOS और डेमो सिम्युलेटर</string>
+    <string name="test_sos_card_title">सुरक्षित टेस्ट SOS अलर्ट भेजें</string>
+    <string name="test_sos_card_body">चयनित संपर्कों को स्पष्ट संदेश भेजता है: “TEST ALERT — No emergency. Please ignore.”</string>
+    <string name="test_send_button">अभी टेस्ट अलर्ट भेजें</string>
+    <string name="test_sent_toast">टेस्ट अलर्ट भेजा गया</string>
+    <string name="sim_title">डेवलपर क्रैश सिम्युलेशन</string>
+    <string name="sim_body">डेमो के दौरान विभिन्न दुर्घटना स्तरों का परीक्षण करें।</string>
+    <string name="sim_low">कम-विश्वास झटका (स्कोर 30 — केवल लॉग)</string>
+    <string name="sim_medium">मध्यम-विश्वास झटका (स्कोर 50 — सूचना)</string>
+    <string name="sim_high">उच्च-विश्वास दुर्घटना (स्कोर 90 — 45s फुल-स्क्रीन अलर्ट)</string>
+    <string name="sim_unresponsive">अचेत ड्राइवर सिम्युलेशन (10s काउंटडाउन → स्वतः अलर्ट)</string>
+    <string name="sim_need_help">दुर्घटना + “मदद चाहिए” सिम्युलेशन</string>
+
+    <string name="history_title">यात्राएँ और घटनाएँ</string>
+    <string name="history_tab_incidents">घटनाएँ</string>
+    <string name="history_tab_trips">यात्राएँ</string>
+    <string name="history_empty_incidents">कोई घटना दर्ज नहीं है।</string>
+    <string name="history_empty_trips">अभी कोई यात्रा दर्ज नहीं है।</string>
+    <string name="incident_report_title">घटना रिपोर्ट</string>
+    <string name="incident_share_text">टेक्स्ट साझा करें</string>
+    <string name="incident_share_json">JSON साझा करें</string>
+
+    <string name="privacy_title">गोपनीयता, अनुमतियाँ और सेटिंग्स</string>
+    <string name="privacy_language">ऐप की भाषा</string>
+    <string name="lang_en">English</string>
+    <string name="lang_hi">हिन्दी</string>
+    <string name="lang_mr">मराठी</string>
+    <string name="privacy_sms_toggle">आपातकालीन संपर्कों को स्वचालित SMS</string>
+    <string name="privacy_autocall_toggle">जवाब न मिलने पर 10s बाद 112 पर ऑटो-कॉल</string>
+    <string name="privacy_dev_toggle">होम स्क्रीन पर डेवलपर सिम्युलेटर दिखाएँ</string>
+    <string name="privacy_open_settings">ऐप सेटिंग्स खोलें</string>
+    <string name="privacy_full_screen_perm">फुल-स्क्रीन क्रैश अलर्ट अनुमति</string>
+    <string name="privacy_battery_opt">अप्रतिबंधित बैटरी उपयोग</string>
+    <string name="privacy_data_collected">डेटा न्यूनतमकरण गारंटी</string>
+    <string name="privacy_delete_history">स्थानीय यात्रा और घटना इतिहास मिटाएँ</string>
+    <string name="common_back">पीछे</string>
+</resources>
