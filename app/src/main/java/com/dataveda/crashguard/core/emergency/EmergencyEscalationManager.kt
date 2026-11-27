@@ -140,6 +140,30 @@ class EmergencyEscalationManager @Inject constructor(
         scope.launch { handleCrash(CrashDetectionEngine.simulated(level), activeTripId, TripRole.DRIVER, null) }
     }
 
+    /** Triggered in Tester Mode when physical device shake exceeds the user-configured g-force threshold. */
+    fun onHardwareShakeCrash(peakG: Double, peakRotationDps: Double) {
+        val signals = com.dataveda.crashguard.core.sensors.CrashSignals(
+            highImpact = true,
+            speedDrop = true,
+            abnormalRotation = peakRotationDps >= 120.0,
+            stillness = true,
+            noInteraction = true,
+            bluetoothCar = device.isConnectedToCarBluetooth(),
+        )
+        val event = CrashEvent(
+            timestampMs = System.currentTimeMillis(),
+            confidence = com.dataveda.crashguard.core.sensors.ConfidenceScorer.score(signals),
+            impactG = peakG,
+            speedBeforeKmh = 36.0,
+            speedAfterKmh = 0.0,
+            peakRotationDps = peakRotationDps,
+            orientationChangeDeg = (peakRotationDps * 0.4).coerceAtMost(180.0),
+            signals = signals,
+            simulated = false,
+        )
+        scope.launch { handleCrash(event, activeTripId, TripRole.DRIVER, null) }
+    }
+
     /** High-confidence crash with a short countdown so the "no response" path can be demoed quickly. */
     fun simulateUnresponsive(countdownSeconds: Int = 10) {
         scope.launch {

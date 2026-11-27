@@ -1,7 +1,6 @@
 package com.dataveda.crashguard.ui
 
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
@@ -10,6 +9,7 @@ import com.dataveda.crashguard.core.emergency.AlertDispatcher
 import com.dataveda.crashguard.core.emergency.EmergencyEscalationManager
 import com.dataveda.crashguard.core.emergency.EmergencyState
 import com.dataveda.crashguard.core.emergency.IncidentReportExporter
+import com.dataveda.crashguard.core.sensors.LiveSensorTelemetry
 import com.dataveda.crashguard.core.sensors.SensorMonitor
 import com.dataveda.crashguard.core.sensors.SimulationLevel
 import com.dataveda.crashguard.core.trip.TripDetectionManager
@@ -68,6 +68,7 @@ class CrashGuardViewModel @Inject constructor(
 
     val tripState: StateFlow<TripState> = tripManager.state
     val emergencyState: StateFlow<EmergencyState> = escalation.state
+    val sensorTelemetry: StateFlow<LiveSensorTelemetry> = sensors.telemetry
 
     val hasAccelerometer: Boolean get() = sensors.hasAccelerometer
     val hasGyroscope: Boolean get() = sensors.hasGyroscope
@@ -95,9 +96,36 @@ class CrashGuardViewModel @Inject constructor(
         }
     }
 
+    /** Switches between LIVE MODE (false) and TESTER MODE (true). */
+    fun setTesterMode(testerMode: Boolean) {
+        viewModelScope.launch {
+            settingsRepo.setTesterMode(testerMode)
+            settingsRepo.setDeveloperMode(testerMode)
+            if (!testerMode) {
+                sensors.stopLiveInspector()
+                val t = tripManager.state.value
+                if (t is TripState.Active && t.mode == TripMode.SIMULATED) {
+                    tripManager.stopTrip()
+                }
+            }
+        }
+    }
+
     fun setSmsEnabled(enabled: Boolean) { viewModelScope.launch { settingsRepo.setSmsEnabled(enabled) } }
     fun setAutoCallEnabled(enabled: Boolean) { viewModelScope.launch { settingsRepo.setAutoCallEnabled(enabled) } }
     fun setDeveloperMode(enabled: Boolean) { viewModelScope.launch { settingsRepo.setDeveloperMode(enabled) } }
+    fun setImpactThreshold(g: Float) { viewModelScope.launch { settingsRepo.setImpactThreshold(g) } }
+    fun setTesterShakeThreshold(g: Float) { viewModelScope.launch { settingsRepo.setTesterShakeThreshold(g) } }
+
+    fun startHardwareSensorInspector(armShakeTest: Boolean, shakeThresholdG: Double) {
+        sensors.startLiveInspector(
+            shakeThresholdG = if (armShakeTest) shakeThresholdG else null,
+            onShakeCrash = { peakG, peakDps -> escalation.onHardwareShakeCrash(peakG, peakDps) },
+        )
+    }
+
+    fun stopHardwareSensorInspector() = sensors.stopLiveInspector()
+    fun resetSensorPeaks() = sensors.resetPeaks()
 
     fun startTrip(mode: TripMode) = tripManager.startTrip(mode)
     fun stopTrip() = tripManager.stopTrip()

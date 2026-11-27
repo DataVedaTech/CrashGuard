@@ -2,7 +2,6 @@ package com.dataveda.crashguard.ui.test
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,11 +19,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Emergency
 import androidx.compose.material.icons.filled.NotificationsActive
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Science
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Sensors
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.VerifiedUser
@@ -35,18 +36,25 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,6 +69,7 @@ import com.dataveda.crashguard.R
 import com.dataveda.crashguard.core.emergency.AlertMessageBuilder
 import com.dataveda.crashguard.core.sensors.SimulationLevel
 import com.dataveda.crashguard.ui.CrashGuardViewModel
+import com.dataveda.crashguard.ui.home.ModeToggleRow
 import com.dataveda.crashguard.ui.theme.AccentIndigo
 import com.dataveda.crashguard.ui.theme.AccentPurple
 import com.dataveda.crashguard.ui.theme.EmergencyRed
@@ -69,6 +78,7 @@ import com.dataveda.crashguard.ui.theme.SafeGreen
 import com.dataveda.crashguard.ui.theme.SafetyTeal
 import com.dataveda.crashguard.ui.theme.StatusPill
 import com.dataveda.crashguard.ui.theme.WarningAmber
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,8 +88,24 @@ fun TestSosScreen(
     onOpenIncident: (String) -> Unit,
 ) {
     val context = LocalContext.current
+    val settings by vm.settings.collectAsState()
     val contacts by vm.contacts.collectAsState()
     val profile by vm.profile.collectAsState()
+    val telemetry by vm.sensorTelemetry.collectAsState()
+
+    var armShakeCrash by remember { mutableStateOf(false) }
+
+    LaunchedEffect(armShakeCrash, settings.testerShakeThresholdG) {
+        vm.startHardwareSensorInspector(
+            armShakeTest = armShakeCrash,
+            shakeThresholdG = settings.testerShakeThresholdG.toDouble(),
+        )
+    }
+
+    DisposableEffect(Unit) {
+        onDispose { vm.stopHardwareSensorInspector() }
+    }
+
     val selected = remember(contacts) {
         mutableStateMapOf<String, Boolean>().apply { contacts.forEach { put(it.id, true) } }
     }
@@ -88,7 +114,7 @@ fun TestSosScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.test_title), fontWeight = FontWeight.Bold) },
+                title = { Text("Tester Mode & Sensor Lab", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
@@ -96,7 +122,11 @@ fun TestSosScreen(
                 },
                 actions = {
                     Box(modifier = Modifier.padding(end = 12.dp)) {
-                        StatusPill(text = "DEMO LAB", color = AccentPurple, icon = Icons.Default.Science)
+                        StatusPill(
+                            text = if (settings.testerMode) "TESTER MODE" else "LIVE MODE",
+                            color = if (settings.testerMode) AccentPurple else SafeGreen,
+                            icon = if (settings.testerMode) Icons.Default.Science else Icons.Default.VerifiedUser,
+                        )
                     }
                 }
             )
@@ -110,7 +140,136 @@ fun TestSosScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // 1. Test SOS Card
+            // 1. Operating Mode Switcher (LIVE MODE vs TESTER MODE)
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = BorderStroke(
+                    1.5.dp,
+                    if (settings.testerMode) AccentPurple.copy(alpha = 0.5f) else SafeGreen.copy(alpha = 0.5f)
+                ),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        text = "Operating Mode",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    ModeToggleRow(
+                        testerMode = settings.testerMode,
+                        onSelectTesterMode = { vm.setTesterMode(it) },
+                        darkSurface = false,
+                    )
+                    Text(
+                        text = if (settings.testerMode) {
+                            "TESTER MODE active: Real-time hardware sensor telemetry, physical shake-to-crash testing, simulated trip mode, and synthetic crash triggers are enabled."
+                        } else {
+                            "LIVE MODE active: Production road-safety thresholds (${settings.impactThresholdG}g impact + GPS >= 15 km/h) are enforced. Demo controls are hidden from the Home screen."
+                        },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+
+            // 2. Real Hardware Sensor Live Telemetry & Physical Shake-to-Crash Test
+            Card(
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                shape = RoundedCornerShape(20.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            IconBadge(Icons.Default.Sensors, tint = SafeGreen, size = 44.dp, iconSize = 24.dp)
+                            Column {
+                                StatusPill(text = "REAL HARDWARE SENSORS", color = SafeGreen)
+                                Spacer(Modifier.height(2.dp))
+                                Text("Live 9-Axis Sensor Telemetry", style = MaterialTheme.typography.titleLarge)
+                            }
+                        }
+                        IconButton(onClick = { vm.resetSensorPeaks() }) {
+                            Icon(Icons.Default.Refresh, contentDescription = "Reset Peaks")
+                        }
+                    }
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+                        SensorMetricBox(
+                            label = "Current G",
+                            value = "%.2f g".format(Locale.US, telemetry.accelG),
+                            accent = SafetyTeal,
+                            modifier = Modifier.weight(1f),
+                        )
+                        SensorMetricBox(
+                            label = "Peak G",
+                            value = "%.2f g".format(Locale.US, telemetry.peakG),
+                            accent = if (telemetry.peakG >= settings.testerShakeThresholdG) EmergencyRed else WarningAmber,
+                            modifier = Modifier.weight(1f),
+                        )
+                        SensorMetricBox(
+                            label = "Gyro Peak",
+                            value = "%.0f °/s".format(Locale.US, telemetry.peakGyroDps),
+                            accent = AccentIndigo,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+
+                    // Physical Shake-to-Crash Toggle
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(14.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                            ) {
+                                Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
+                                    Text(
+                                        text = "Arm Physical Shake-to-Crash Test",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                    Text(
+                                        text = "Shake your phone above ${settings.testerShakeThresholdG}g to trigger a real hardware-sensor crash alert.",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                                Switch(
+                                    checked = armShakeCrash,
+                                    onCheckedChange = {
+                                        armShakeCrash = it
+                                        if (it && !settings.testerMode) vm.setTesterMode(true)
+                                    },
+                                )
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                listOf(1.8f, 2.2f, 3.0f, 4.5f).forEach { g ->
+                                    FilterChip(
+                                        selected = settings.testerShakeThresholdG == g,
+                                        onClick = { vm.setTesterShakeThreshold(g) },
+                                        label = { Text("${g}g", fontWeight = FontWeight.Bold) },
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 3. Safe Test SOS Alert Card
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
@@ -124,7 +283,7 @@ fun TestSosScreen(
                     ) {
                         IconBadge(Icons.Default.VerifiedUser, tint = SafetyTeal, size = 44.dp, iconSize = 24.dp)
                         Column {
-                            StatusPill(text = "SAFE VALIDATION", color = SafeGreen)
+                            StatusPill(text = "SAFE SMS VALIDATION", color = SafeGreen)
                             Spacer(Modifier.height(2.dp))
                             Text(stringResource(R.string.test_sos_card_title), style = MaterialTheme.typography.titleLarge)
                         }
@@ -176,14 +335,14 @@ fun TestSosScreen(
                         shape = RoundedCornerShape(14.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = SafetyTeal),
                     ) {
-                        Icon(Icons.Default.Send, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null, modifier = Modifier.size(18.dp))
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.test_send_button), fontWeight = FontWeight.Bold)
                     }
                 }
             }
 
-            // 2. Developer Sensor & Crash Simulation Panel (Spec 4.9)
+            // 4. Developer Sensor & Crash Simulation Panel (Spec 4.9)
             Card(
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
@@ -197,7 +356,7 @@ fun TestSosScreen(
                     ) {
                         IconBadge(Icons.Default.Science, tint = AccentPurple, size = 44.dp, iconSize = 24.dp)
                         Column {
-                            StatusPill(text = "SENSOR FUSION SIMULATOR", color = AccentPurple)
+                            StatusPill(text = "SYNTHETIC SCENARIO TRIGGERS", color = AccentPurple)
                             Spacer(Modifier.height(2.dp))
                             Text(stringResource(R.string.sim_title), style = MaterialTheme.typography.titleLarge)
                         }
@@ -238,7 +397,7 @@ fun TestSosScreen(
                     SimulationScenarioCard(
                         icon = Icons.Default.Timer,
                         accent = EmergencyRed,
-                        badge = "10s FAST DEMO → AUTO-SOS",
+                        badge = "10s FAST COUNTDOWN → AUTO-SOS",
                         title = stringResource(R.string.sim_unresponsive),
                         onClick = { vm.simulateUnresponsive() },
                     )
@@ -252,6 +411,29 @@ fun TestSosScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun SensorMetricBox(
+    label: String,
+    value: String,
+    accent: Color,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier,
+        color = accent.copy(alpha = 0.10f),
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(1.dp, accent.copy(alpha = 0.30f)),
+    ) {
+        Column(
+            modifier = Modifier.padding(vertical = 10.dp, horizontal = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(value, color = accent, fontWeight = FontWeight.ExtraBold, fontSize = 15.sp, maxLines = 1)
+            Text(label, fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
         }
     }
 }

@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.dataveda.crashguard.core.sensors.SimulationLevel
+import com.dataveda.crashguard.domain.models.UserResponse
 import com.dataveda.crashguard.ui.CrashGuardViewModel
 import com.dataveda.crashguard.ui.contacts.ContactsScreen
 import com.dataveda.crashguard.ui.history.HistoryScreen
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     private val vm: CrashGuardViewModel by viewModels()
     private var requestedRoute by mutableStateOf<String?>(null)
+    private var openDrawer by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +44,12 @@ class MainActivity : AppCompatActivity() {
         handleIntent(intent)
         setContent {
             CrashGuardTheme {
-                CrashGuardNavApp(vm, requestedRoute) { requestedRoute = null }
+                CrashGuardNavApp(
+                    vm = vm,
+                    requestedRoute = requestedRoute,
+                    openDrawer = openDrawer,
+                    onRouteConsumed = { requestedRoute = null },
+                )
             }
         }
     }
@@ -57,11 +64,15 @@ class MainActivity : AppCompatActivity() {
         if (intent?.getBooleanExtra("complete_onboarding", false) == true) {
             vm.completeOnboarding(enableProtection = true)
         }
+        if (intent?.hasExtra("tester_mode") == true) {
+            vm.setTesterMode(intent.getBooleanExtra("tester_mode", false))
+        }
+        openDrawer = intent?.getBooleanExtra("open_drawer", false) == true
         intent?.getStringExtra("route")?.let { requestedRoute = it }
         intent?.getStringExtra("simulate")?.let { sim ->
             when (sim) {
                 "high" -> vm.simulate(SimulationLevel.HIGH)
-                "need_help" -> vm. respondToCrash(com.dataveda.crashguard.domain.models.UserResponse.NEED_HELP)
+                "need_help" -> vm.respondToCrash(UserResponse.NEED_HELP)
                 "sos" -> vm.triggerManualSos()
                 "close" -> vm.closeIncident(markSafe = true)
             }
@@ -84,6 +95,7 @@ private object Routes {
 private fun CrashGuardNavApp(
     vm: CrashGuardViewModel,
     requestedRoute: String?,
+    openDrawer: Boolean,
     onRouteConsumed: () -> Unit,
 ) {
     val settings by vm.settings.collectAsState()
@@ -111,6 +123,7 @@ private fun CrashGuardNavApp(
         composable(Routes.HOME) {
             HomeScreen(
                 vm = vm,
+                openDrawerOnLaunch = openDrawer,
                 onOpenContacts = { navController.navigate(Routes.CONTACTS) },
                 onOpenTestSos = { navController.navigate(Routes.TEST_SOS) },
                 onOpenProfile = { navController.navigate(Routes.PROFILE) },
