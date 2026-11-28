@@ -101,6 +101,7 @@ class CrashDetectionEngine(
     private data class Sample(val t: Long, val v: Double)
 
     private val accel = ArrayDeque<Sample>()   // |a| in g
+    private val gyro = ArrayDeque<Sample>()    // angular velocity in deg/s
     private val speeds = ArrayDeque<Sample>()  // km/h
     private var lastGyroT = -1L
 
@@ -118,7 +119,7 @@ class CrashDetectionEngine(
         private set
 
     fun reset() {
-        accel.clear(); speeds.clear(); evaluating = false; lastGyroT = -1L; cooldownUntil = 0L
+        accel.clear(); gyro.clear(); speeds.clear(); evaluating = false; lastGyroT = -1L; cooldownUntil = 0L
     }
 
     fun onSpeed(tMs: Long, speedKmh: Double) {
@@ -156,8 +157,10 @@ class CrashDetectionEngine(
         impactT = tMs
         peakG = accel.filter { tMs - it.t <= config.spikeWindowMs }.maxOf { it.v }
         speedBefore = before
-        peakRotation = 0.0
-        orientationDeg = 0.0
+        // Include any gyroscope spike captured during the impact onset window (rollover often starts at sample #1).
+        val onsetGyro = gyro.filter { tMs - it.t <= config.spikeWindowMs * 2 }.maxOfOrNull { it.v } ?: 0.0
+        peakRotation = onsetGyro
+        orientationDeg = (onsetGyro * 0.1).coerceAtMost(180.0)
         interacted = false
     }
 
@@ -166,8 +169,9 @@ class CrashDetectionEngine(
         val dps = Math.toDegrees(sqrt((x * x + y * y + z * z).toDouble()))
         val dt = if (lastGyroT < 0) 0.0 else min((tMs - lastGyroT) / 1000.0, 0.1)
         lastGyroT = tMs
+        gyro.addLast(Sample(tMs, dps))
+        while (gyro.isNotEmpty() && tMs - gyro.first().t > GYRO_BUFFER_MS) gyro.removeFirst()
         if (!evaluating) return
-        // Include rotation from slightly before impact (rollover often starts at impact).
         peakRotation = max(peakRotation, dps)
         orientationDeg = min(orientationDeg + dps * dt, 720.0)
     }
@@ -236,6 +240,7 @@ class CrashDetectionEngine(
     companion object {
         const val GRAVITY = 9.80665
         private const val BUFFER_MS = 8_000L
+        private const val GYRO_BUFFER_MS = 2_000L
         private const val REJECT_COOLDOWN_MS = 2_000L
 
         /** Synthetic events for the developer simulation panel. */

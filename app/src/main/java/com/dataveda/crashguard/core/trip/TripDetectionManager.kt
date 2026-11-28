@@ -49,8 +49,17 @@ class TripDetectionManager @Inject constructor(@ApplicationContext private val c
     private val _state = MutableStateFlow<TripState>(TripState.Idle)
     val state: StateFlow<TripState> = _state.asStateFlow()
 
+    @Volatile
+    private var interactionListener: ((Long) -> Unit)? = null
+
     internal fun set(state: TripState) { _state.value = state }
     internal fun update(block: (TripState) -> TripState) = _state.update(block)
+    internal fun setInteractionListener(listener: ((Long) -> Unit)?) { interactionListener = listener }
+
+    /** Called by MainActivity on touch events so post-impact screen interaction is fed into CrashDetectionEngine. */
+    fun notifyUserInteraction(tMs: Long = System.currentTimeMillis()) {
+        interactionListener?.invoke(tMs)
+    }
 
     fun hasActivityPermission(): Boolean =
         Build.VERSION.SDK_INT < 29 ||
@@ -93,7 +102,11 @@ class TripDetectionManager @Inject constructor(@ApplicationContext private val c
     fun stopTrip() = TripMonitoringService.stop(context)
 
     fun setRole(role: TripRole) {
-        _state.update { if (it is TripState.Active) it.copy(role = role) else it }
+        if (role == TripRole.NOT_DRIVING) {
+            stopTrip()
+        } else {
+            _state.update { if (it is TripState.Active) it.copy(role = role) else it }
+        }
     }
 
     val isAutoTrip: Boolean

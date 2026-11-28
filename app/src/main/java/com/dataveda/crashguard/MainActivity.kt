@@ -61,6 +61,13 @@ class MainActivity : AppCompatActivity() {
         handleIntent(intent)
     }
 
+    override fun dispatchTouchEvent(ev: android.view.MotionEvent?): Boolean {
+        if (ev?.action == android.view.MotionEvent.ACTION_DOWN) {
+            vm.onUserScreenTouch()
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
     private fun handleIntent(intent: Intent?) {
         if (intent?.getBooleanExtra("complete_onboarding", false) == true) {
             vm.completeOnboarding(enableProtection = true)

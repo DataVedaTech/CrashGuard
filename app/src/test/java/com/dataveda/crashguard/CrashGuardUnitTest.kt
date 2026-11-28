@@ -74,11 +74,10 @@ class CrashGuardUnitTest {
         engine.onSpeed(2_000L, 48.0)
 
         // Sustained high impact (>= 2 samples within 250ms above 4.5g) at t=3_000
+        // Gyroscope rollover sample arrives at sample #1 (before evaluating becomes true on sample #2)
         engine.onAccelMagnitudeG(3_000L, 6.2)
+        engine.onGyroscope(3_010L, 4.5f, 0f, 0f)
         engine.onAccelMagnitudeG(3_050L, 6.8)
-
-        // Sudden rotation (250 deg/s -> ~4.36 rad/s)
-        engine.onGyroscope(3_100L, 4.5f, 0f, 0f)
 
         // Sudden speed drop within 3 seconds
         engine.onSpeed(4_000L, 2.0)
@@ -156,7 +155,13 @@ class CrashGuardUnitTest {
         timer.start(
             seconds = 5,
             onTick = { ticks += it },
-            onFinish = { finished = true },
+            onFinish = {
+                // Regression check: timer must clear its active job before invoking onFinish
+                // so calling timer.cancel() inside onFinish does not self-cancel the coroutine.
+                assertFalse(timer.isRunning)
+                timer.cancel()
+                finished = true
+            },
         )
         advanceTimeBy(5_000L)
         runCurrent()

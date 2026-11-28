@@ -33,6 +33,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.UUID
 import javax.inject.Inject
 import kotlin.random.Random
@@ -69,7 +71,9 @@ class TripMonitoringService : LifecycleService() {
     private var lowSince: Long? = null
     private var lastPersist = 0L
     private var tripType = TripType.UNKNOWN
-    private val jobs = mutableListOf<Job>()
+    private var speedJob: Job? = null
+    private var confirmTimeoutJob: Job? = null
+    private val persistMutex = Mutex()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
@@ -88,7 +92,12 @@ class TripMonitoringService : LifecycleService() {
             // Upgrade an unconfirmed auto trip to manual/simulated immediately.
             if (tripId == null && requested != TripMode.AUTO) {
                 mode = requested
-                if (requested == TripMode.SIMULATED) startSimulatedSpeed()
+                confirmTimeoutJob?.cancel()
+                confirmTimeoutJob = null
+                if (requested == TripMode.SIMULATED) {
+                    speedJob?.cancel()
+                    startSimulatedSpeed()
+                }
                 confirmTrip()
             }
             return
@@ -124,6 +133,9 @@ class TripMonitoringService : LifecycleService() {
                 onAccel = { t, x, y, z -> e.onAccelerometer(t, x, y, z) },
                 onGyro = { t, x, y, z -> e.onGyroscope(t, x, y, z) },
             )
+            tripManager.setInteractionListener { tMs ->
+                sensors.post { e.onUserInteraction(tMs) }
+            }
             if (!sensors.hasAccelerometer) {
                 notifier.showWarning(getString(R.string.warn_sensor_title), getString(R.string.warn_sensor_body))
             }
@@ -132,7 +144,7 @@ class TripMonitoringService : LifecycleService() {
 
             if (mode == TripMode.AUTO) {
                 tripManager.set(TripState.Confirming(startedAt))
-                jobs += lifecycleScope.launch {
+                confirmTimeoutJob = lifecycleScope.launch {
                     delay(CONFIRM_TIMEOUT_MS)
                     if (tripId == null) {
                         Log.i(TAG, "Trip not confirmed by GPS; stopping")
@@ -146,10 +158,13 @@ class TripMonitoringService : LifecycleService() {
     }
 
     private fun startForegroundSafe(confirming: Boolean): Boolean = try {
+        val fgsType = if (Build.VERSION.SDK_INT >= 29 && location.hasPermission()) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+        } else 0
         ServiceCompat.startForeground(
             this, Notifier.ID_TRIP,
             notifier.tripNotification(startedAt, confirming, mode == TripMode.SIMULATED),
-            if (Build.VERSION.SDK_INT >= 29) ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION else 0,
+            fgsType,
         )
         true
     } catch (e: Exception) {
@@ -162,7 +177,8 @@ class TripMonitoringService : LifecycleService() {
             notifier.showWarning(getString(R.string.warn_location_title), getString(R.string.warn_location_body))
             return
         }
-        jobs += lifecycleScope.launch {
+        speedJob?.cancel()
+        speedJob = lifecycleScope.launch {
             location.updates(GPS_INTERVAL_MS).collect { loc ->
                 val kmh = if (loc.hasSpeed()) loc.speed * 3.6 else {
                     val prev = lastLocation
@@ -174,7 +190,8 @@ class TripMonitoringService : LifecycleService() {
     }
 
     private fun startSimulatedSpeed() {
-        jobs += lifecycleScope.launch {
+        speedJob?.cancel()
+        speedJob = lifecycleScope.launch {
             while (isActive) {
                 onSpeed(System.currentTimeMillis(), 40.0 + Random.nextDouble(-3.0, 3.0), null)
                 delay(GPS_INTERVAL_MS)
@@ -223,6 +240,8 @@ class TripMonitoringService : LifecycleService() {
 
     private fun confirmTrip() {
         if (tripId != null) return
+        confirmTimeoutJob?.cancel()
+        confirmTimeoutJob = null
         val id = UUID.randomUUID().toString()
         tripId = id
         val bt = device.isConnectedToCarBluetooth()
@@ -233,13 +252,14 @@ class TripMonitoringService : LifecycleService() {
         }
         tripManager.set(TripState.Active(id, startedAt, mode, role = role, bluetoothCar = bt))
         escalation.activeTripId = id
+        val initialTrip = TripEntity(
+            id = id, startedAt = startedAt, tripType = tripType, role = role,
+            simulated = mode == TripMode.SIMULATED, manual = mode == TripMode.MANUAL,
+        )
         appScope.launch {
-            trips.insert(
-                TripEntity(
-                    id = id, startedAt = startedAt, tripType = tripType, role = role,
-                    simulated = mode == TripMode.SIMULATED, manual = mode == TripMode.MANUAL,
-                )
-            )
+            persistMutex.withLock {
+                trips.insert(initialTrip)
+            }
         }
         startForegroundSafe(confirming = false)
         if (role == TripRole.UNKNOWN) notifier.showRolePrompt()
@@ -257,13 +277,15 @@ class TripMonitoringService : LifecycleService() {
         val snapshot = Triple(distanceKm, maxSpeed, role)
         val ended = if (status == TripStatus.COMPLETED) System.currentTimeMillis() else null
         appScope.launch {
-            val existing = trips.get(id) ?: return@launch
-            trips.update(
-                existing.copy(
-                    distanceKm = snapshot.first, maxSpeedKmh = snapshot.second, role = snapshot.third,
-                    status = status, endedAt = ended,
+            persistMutex.withLock {
+                val existing = trips.get(id) ?: return@withLock
+                trips.update(
+                    existing.copy(
+                        distanceKm = snapshot.first, maxSpeedKmh = snapshot.second, role = snapshot.third,
+                        status = status, endedAt = ended,
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -275,8 +297,11 @@ class TripMonitoringService : LifecycleService() {
     }
 
     private fun cleanup() {
-        jobs.forEach { it.cancel() }
-        jobs.clear()
+        speedJob?.cancel()
+        speedJob = null
+        confirmTimeoutJob?.cancel()
+        confirmTimeoutJob = null
+        tripManager.setInteractionListener(null)
         sensors.stop()
         engine = null
         tripId = null

@@ -388,8 +388,10 @@ class EmergencyEscalationManager @Inject constructor(
     }
 
     private fun startSharing(id: String, initialFix: GeoFix?) {
-        runCatching { IncidentService.start(context) }
-            .onFailure { Log.w(TAG, "Could not start incident foreground service", it) }
+        if (location.hasPermission()) {
+            runCatching { IncidentService.start(context) }
+                .onFailure { Log.w(TAG, "Could not start incident foreground service", it) }
+        }
         sharingJob?.cancel()
         sharingJob = scope.launch {
             var lastSentFix = initialFix
@@ -425,9 +427,20 @@ class EmergencyEscalationManager @Inject constructor(
     }
 
     fun extendSharing(minutes: Int = 15) {
+        val now = System.currentTimeMillis()
+        var restartForId: String? = null
+        var restartFix: GeoFix? = null
         _state.update {
-            if (it is EmergencyState.Escalated && it.sharingActive) it.copy(sharingEndsAt = it.sharingEndsAt + minutes * 60_000L) else it
+            if (it is EmergencyState.Escalated) {
+                val base = maxOf(now, it.sharingEndsAt)
+                if (!it.sharingActive || sharingJob?.isActive != true) {
+                    restartForId = it.incidentId
+                    restartFix = it.fix
+                }
+                it.copy(sharingActive = true, sharingEndsAt = base + minutes * 60_000L)
+            } else it
         }
+        restartForId?.let { startSharing(it, restartFix) }
     }
 
     private fun startAutoCall() {
@@ -449,9 +462,14 @@ class EmergencyEscalationManager @Inject constructor(
     }
 
     fun addNote(note: String) {
+        val trimmed = note.trim()
+        if (trimmed.isEmpty()) return
         val id = currentIncidentId() ?: return
         scope.launch {
-            incidents.mutate(id) { it.copy(notes = if (it.notes.isBlank()) note else "${it.notes}; $note") }
+            incidents.mutate(id) {
+                val existing = it.notes.split("; ").map { s -> s.trim() }.filter { s -> s.isNotEmpty() }
+                if (trimmed in existing) it else it.copy(notes = (existing + trimmed).joinToString("; "))
+            }
         }
     }
 

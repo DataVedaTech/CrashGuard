@@ -71,13 +71,16 @@ class AlertDispatcher @Inject constructor(
 
     suspend fun sendSms(deliveryId: Long) {
         val d = incidents.delivery(deliveryId) ?: return
+        if (d.attempts >= MAX_SMS_ATTEMPTS || d.phone.isBlank()) {
+            incidents.updateDelivery(deliveryId, DeliveryStatus.FAILED, "Max attempts or empty phone")
+            return
+        }
         incidents.markAttempt(deliveryId)
         try {
-            val sm: SmsManager = if (Build.VERSION.SDK_INT >= 31) {
+            @Suppress("DEPRECATION")
+            val sm: SmsManager = (if (Build.VERSION.SDK_INT >= 31) {
                 context.getSystemService(SmsManager::class.java)
-            } else {
-                @Suppress("DEPRECATION") SmsManager.getDefault()
-            }
+            } else null) ?: SmsManager.getDefault()
             val parts = sm.divideMessage(d.message)
             val sent = ArrayList<PendingIntent>()
             val delivered = ArrayList<PendingIntent>()
@@ -89,7 +92,7 @@ class AlertDispatcher @Inject constructor(
         } catch (e: Exception) {
             Log.w(TAG, "SMS send failed for delivery $deliveryId", e)
             incidents.updateDelivery(deliveryId, DeliveryStatus.FAILED, e.javaClass.simpleName)
-            scheduleRetry(context)
+            if (d.attempts + 1 < MAX_SMS_ATTEMPTS) scheduleRetry(context)
         }
     }
 

@@ -130,6 +130,7 @@ class CrashGuardViewModel @Inject constructor(
     fun startTrip(mode: TripMode) = tripManager.startTrip(mode)
     fun stopTrip() = tripManager.stopTrip()
     fun setTripRole(role: TripRole) = tripManager.setRole(role)
+    fun onUserScreenTouch() = tripManager.notifyUserInteraction()
 
     fun saveContact(id: String?, name: String, phone: String, primary: Boolean, onDone: (Boolean) -> Unit = {}) {
         viewModelScope.launch {
