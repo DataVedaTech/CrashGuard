@@ -26,9 +26,14 @@ class IncidentService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         try {
+            val fgsType = if (Build.VERSION.SDK_INT >= 34) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            } else if (Build.VERSION.SDK_INT >= 29) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            } else 0
             ServiceCompat.startForeground(
                 this, Notifier.ID_SHARING, notifier.sharingNotification(),
-                if (Build.VERSION.SDK_INT >= 29) ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION else 0,
+                fgsType,
             )
         } catch (e: Exception) {
             Log.w("IncidentService", "startForeground failed", e)

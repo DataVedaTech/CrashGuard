@@ -1,5 +1,8 @@
 package com.dataveda.crashguard.ui.home
 
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -134,12 +137,20 @@ fun HomeScreen(
 
     val drawerState = rememberDrawerState(initialValue = if (openDrawerOnLaunch) DrawerValue.Open else DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val permRefreshTick = androidx.compose.runtime.remember { androidx.compose.runtime.mutableIntStateOf(0) }
+    val permLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permRefreshTick.intValue++ }
 
     LaunchedEffect(openDrawerOnLaunch) {
         if (openDrawerOnLaunch) drawerState.open()
     }
 
-    val missingCritical = AppPermission.entries.any { it.critical && it.applicable && !it.isGranted(context) }
+    @Suppress("UNUSED_EXPRESSION") permRefreshTick.intValue
+    val missingPerms = AppPermission.entries
+        .filter { it.critical && it.applicable && !it.isGranted(context) }
+        .flatMap { it.permissions }
+    val missingCritical = missingPerms.isNotEmpty()
     val batteryRestricted = !vm.isIgnoringBatteryOptimizations()
 
     ModalNavigationDrawer(
@@ -644,7 +655,18 @@ fun HomeScreen(
                             ) {
                                 if (tripState is TripState.Idle) {
                                     Button(
-                                        onClick = { vm.startTrip(TripMode.MANUAL) },
+                                        onClick = {
+                                            if (missingPerms.isNotEmpty()) {
+                                                permLauncher.launch(missingPerms.toTypedArray())
+                                            }
+                                            vm.startTrip(TripMode.MANUAL)
+                                            Toast.makeText(
+                                                context,
+                                                if (settings.testerMode) "Driving Mode Started! Shake phone (>${settings.testerShakeThresholdG}g) to trigger crash alert."
+                                                else "Live Driving Mode Started — Hardware Sensors & GPS Active",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        },
                                         modifier = Modifier.weight(1f).heightIn(min = 52.dp),
                                         shape = RoundedCornerShape(14.dp),
                                         colors = ButtonDefaults.buttonColors(
@@ -663,7 +685,17 @@ fun HomeScreen(
                                     }
                                     if (settings.testerMode) {
                                         OutlinedButton(
-                                            onClick = { vm.startTrip(TripMode.SIMULATED) },
+                                            onClick = {
+                                                if (missingPerms.isNotEmpty()) {
+                                                    permLauncher.launch(missingPerms.toTypedArray())
+                                                }
+                                                vm.startTrip(TripMode.SIMULATED)
+                                                Toast.makeText(
+                                                    context,
+                                                    "Simulated Trip (40 km/h) Started! Shake phone or tap Crash (90) below.",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            },
                                             modifier = Modifier.weight(1f).heightIn(min = 52.dp),
                                             shape = RoundedCornerShape(14.dp),
                                             border = BorderStroke(1.5.dp, Color.White.copy(alpha = 0.55f)),
@@ -743,7 +775,13 @@ fun HomeScreen(
                     Card(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
                         shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.fillMaxWidth().clickable { onOpenPrivacy() },
+                        modifier = Modifier.fillMaxWidth().clickable {
+                            if (missingPerms.isNotEmpty()) {
+                                permLauncher.launch(missingPerms.toTypedArray())
+                            } else {
+                                onOpenPrivacy()
+                            }
+                        },
                     ) {
                         Row(
                             modifier = Modifier.fillMaxWidth().padding(14.dp),

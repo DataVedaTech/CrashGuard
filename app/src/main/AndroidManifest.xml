@@ -16,6 +16,7 @@
     <!-- Foreground monitoring -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <!-- Contact picker, Bluetooth car detection & network status -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -73,12 +74,20 @@
         <service
             android:name=".core.trip.TripMonitoringService"
             android:exported="false"
-            android:foregroundServiceType="location" />
+            android:foregroundServiceType="location|specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="road_crash_sensor_monitoring" />
+        </service>
 
         <service
             android:name=".core.emergency.IncidentService"
             android:exported="false"
-            android:foregroundServiceType="location" />
+            android:foregroundServiceType="location|specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="emergency_sos_escalation" />
+        </service>
 
         <receiver
             android:name=".core.trip.ActivityTransitionReceiver"

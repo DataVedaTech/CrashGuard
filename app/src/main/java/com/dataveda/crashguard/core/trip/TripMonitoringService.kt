@@ -105,9 +105,7 @@ class TripMonitoringService : LifecycleService() {
         mode = requested
         startedAt = System.currentTimeMillis()
         if (!startForegroundSafe(confirming = mode == TripMode.AUTO)) {
-            notifier.showWarning(getString(R.string.warn_location_title), getString(R.string.warn_location_body))
-            stopSelf()
-            return
+            Log.w(TAG, "Foreground service promotion degraded; continuing trip sensor monitoring")
         }
         running = true
 
@@ -129,8 +127,19 @@ class TripMonitoringService : LifecycleService() {
                 onEvent = { event -> lifecycleScope.launch { onCrash(event) } },
             )
             engine = e
+            var lastShakeCrashAt = 0L
             sensors.start(
-                onAccel = { t, x, y, z -> e.onAccelerometer(t, x, y, z) },
+                onAccel = { t, x, y, z ->
+                    e.onAccelerometer(t, x, y, z)
+                    if (cfg.testerMode || mode == TripMode.SIMULATED) {
+                        val g = kotlin.math.sqrt((x * x + y * y + z * z).toDouble()) / CrashDetectionEngine.GRAVITY
+                        if (g >= cfg.testerShakeThresholdG.toDouble() && t - lastShakeCrashAt > 8_000L) {
+                            lastShakeCrashAt = t
+                            val peakDps = sensors.telemetry.value.peakGyroDps
+                            lifecycleScope.launch { escalation.onHardwareShakeCrash(g, peakDps) }
+                        }
+                    }
+                },
                 onGyro = { t, x, y, z -> e.onGyroscope(t, x, y, z) },
             )
             tripManager.setInteractionListener { tMs ->
@@ -158,9 +167,11 @@ class TripMonitoringService : LifecycleService() {
     }
 
     private fun startForegroundSafe(confirming: Boolean): Boolean = try {
-        val fgsType = if (Build.VERSION.SDK_INT >= 29 && location.hasPermission()) {
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
-        } else 0
+        val fgsType = when {
+            Build.VERSION.SDK_INT >= 29 && location.hasPermission() -> ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            Build.VERSION.SDK_INT >= 34 -> ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            else -> 0
+        }
         ServiceCompat.startForeground(
             this, Notifier.ID_TRIP,
             notifier.tripNotification(startedAt, confirming, mode == TripMode.SIMULATED),
