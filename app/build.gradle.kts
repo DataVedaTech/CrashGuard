@@ -14,14 +14,39 @@ android {
         applicationId = "com.dataveda.crashguard"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0-mvp"
+        versionCode = 3
+        versionName = "1.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            val ksFile = file("rakshakavach-release.jks")
+            if (ksFile.exists()) {
+                storeFile = ksFile
+                storePassword = "RakshaKavach2026!Safe"
+                keyAlias = "rakshakavach"
+                keyPassword = "RakshaKavach2026!Safe"
+                enableV1Signing = true
+                enableV2Signing = true
+                enableV3Signing = true
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            val relSign = signingConfigs.findByName("release")
+            if (relSign?.storeFile?.exists() == true) {
+                signingConfig = relSign
+            }
+        }
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
+            val relSign = signingConfigs.findByName("release")
+            if (relSign?.storeFile?.exists() == true) {
+                signingConfig = relSign
+            }
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }

@@ -33,11 +33,11 @@ enum class AppPermission(
         R.string.perm_activity, R.string.perm_activity_why, R.string.perm_activity_limit, true, 29,
     ),
     SMS(
-        listOf(Manifest.permission.SEND_SMS),
+        emptyList(),
         R.string.perm_sms, R.string.perm_sms_why, R.string.perm_sms_limit, false,
     ),
     CALL(
-        listOf(Manifest.permission.CALL_PHONE),
+        emptyList(),
         R.string.perm_call, R.string.perm_call_why, R.string.perm_call_limit, false,
     ),
     BLUETOOTH(
@@ -48,7 +48,7 @@ enum class AppPermission(
     val applicable: Boolean get() = Build.VERSION.SDK_INT >= minSdk
 
     fun isGranted(context: Context): Boolean =
-        !applicable || permissions.first().let {
+        !applicable || permissions.isEmpty() || permissions.first().let {
             ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
         }
 }
@@ -69,8 +69,7 @@ object PermissionUtils {
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         } else appSettingsIntent(context)
 
-    @android.annotation.SuppressLint("BatteryLife")
-    fun batteryOptimizationIntent(context: Context) =
-        Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:${context.packageName}"))
+    fun batteryOptimizationIntent(context: Context): Intent =
+        Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 }

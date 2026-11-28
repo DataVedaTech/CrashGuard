@@ -569,14 +569,11 @@ fun IncidentEntity.toFix(): GeoFix? =
 object EmergencyCaller {
     const val EMERGENCY_NUMBER = "112"
 
-    /** Places the call directly when CALL_PHONE is granted, otherwise opens the dialer pre-filled with 112. */
+    /** Opens the emergency dialer pre-filled with 112 (no restricted CALL_PHONE permission required). */
     fun call112(context: Context) {
-        val direct = ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
-        val intent = Intent(if (direct) Intent.ACTION_CALL else Intent.ACTION_DIAL, Uri.parse("tel:$EMERGENCY_NUMBER"))
+        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$EMERGENCY_NUMBER"))
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        runCatching { context.startActivity(intent) }.onFailure {
-            runCatching { context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$EMERGENCY_NUMBER")).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
-        }
+        runCatching { context.startActivity(intent) }
     }
 
     fun dial(context: Context, phone: String) {

@@ -157,8 +157,8 @@ fun PrivacyScreen(
                             checked = settings.smsEnabled,
                             onCheckedChange = { enabled ->
                                 vm.setSmsEnabled(enabled)
-                                if (enabled && !AppPermission.SMS.isGranted(context)) {
-                                    launcher.launch(arrayOf(Manifest.permission.SEND_SMS))
+                                if (enabled && AppPermission.SMS.permissions.isNotEmpty() && !AppPermission.SMS.isGranted(context)) {
+                                    launcher.launch(AppPermission.SMS.permissions.toTypedArray())
                                 }
                             }
                         )
@@ -177,8 +177,8 @@ fun PrivacyScreen(
                             checked = settings.autoCallEnabled,
                             onCheckedChange = { enabled ->
                                 vm.setAutoCallEnabled(enabled)
-                                if (enabled && !AppPermission.CALL.isGranted(context)) {
-                                    launcher.launch(arrayOf(Manifest.permission.CALL_PHONE))
+                                if (enabled && AppPermission.CALL.permissions.isNotEmpty() && !AppPermission.CALL.isGranted(context)) {
+                                    launcher.launch(AppPermission.CALL.permissions.toTypedArray())
                                 }
                             }
                         )
