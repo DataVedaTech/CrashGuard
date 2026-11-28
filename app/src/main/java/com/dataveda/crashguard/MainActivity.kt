@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -101,11 +102,20 @@ private fun CrashGuardNavApp(
     val settings by vm.settings.collectAsState()
     val navController = rememberNavController()
     val startDestination = if (settings.onboardingDone) Routes.HOME else Routes.ONBOARDING
+    var pendingRoute by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(requestedRoute) {
         if (!requestedRoute.isNullOrBlank()) {
-            navController.navigate(requestedRoute) { launchSingleTop = true }
+            pendingRoute = requestedRoute
             onRouteConsumed()
+        }
+    }
+
+    LaunchedEffect(pendingRoute, startDestination) {
+        val target = pendingRoute
+        if (!target.isNullOrBlank() && (startDestination == Routes.HOME || target == Routes.ONBOARDING)) {
+            navController.navigate(target) { launchSingleTop = true }
+            pendingRoute = null
         }
     }
 
