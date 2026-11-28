@@ -15,8 +15,8 @@ object IncidentReportExporter {
         profile: EmergencyProfile,
         deliveries: List<AlertDeliveryEntity>,
     ): String = buildString {
-        appendLine("CRASHGUARD INCIDENT REPORT")
-        appendLine("==========================")
+        appendLine("RAKSHAKAVACH INCIDENT REPORT")
+        appendLine("============================")
         appendLine("Incident ID: ${incident.id}")
         appendLine("Timestamp: ${AlertMessageBuilder.timestamp(incident.detectedAt)}")
         if (incident.resolvedAt != null) {

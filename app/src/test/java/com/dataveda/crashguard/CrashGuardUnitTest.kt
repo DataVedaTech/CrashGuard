@@ -209,7 +209,7 @@ class CrashGuardUnitTest {
             notes = "I am injured.",
         )
 
-        assertTrue(msg.contains("CRASHGUARD EMERGENCY ALERT"))
+        assertTrue(msg.contains("RAKSHAKAVACH EMERGENCY ALERT"))
         assertTrue(msg.contains("Aarav Sharma"))
         assertTrue(msg.contains("https://maps.google.com/?q=19.076000,72.877700"))
         assertTrue(msg.contains("Blood group: O+"))

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">क्रैशगार्ड (CrashGuard)</string>
+    <string name="app_name">रक्षाकवच (RakshaKavach)</string>
     <string name="app_tagline">स्वचालित सड़क दुर्घटना पहचान और आपातकालीन अलर्ट</string>
 
-    <string name="disclaimer_primary">क्रैशगार्ड एक सुरक्षा-सहायता ऐप है। यह आपातकालीन सेवाओं, चिकित्सा देखभाल या वाहन सुरक्षा प्रणालियों का विकल्प नहीं है।\n\nजानलेवा आपात स्थिति में तुरंत 112 पर कॉल करें।</string>
+    <string name="disclaimer_primary">रक्षाकवच एक सुरक्षा-सहायता ऐप है। यह आपातकालीन सेवाओं, चिकित्सा देखभाल या वाहन सुरक्षा प्रणालियों का विकल्प नहीं है।\n\nजानलेवा आपात स्थिति में तुरंत 112 पर कॉल करें।</string>
     <string name="disclaimer_secondary">स्वचालित दुर्घटना पहचान हर दुर्घटना का पता नहीं लगा सकती और कभी-कभी गलत अलर्ट दे सकती है। ड्राइविंग करते समय फ़ोन चार्ज और सुरक्षित रूप से माउंट रखें।</string>
 
     <string name="channel_trip">सक्रिय यात्रा सुरक्षा</string>
@@ -15,7 +15,7 @@
     <string name="notif_trip_active">क्रैश सुरक्षा सक्रिय है</string>
     <string name="notif_trip_active_sim">क्रैश सुरक्षा सक्रिय (सिम्युलेटेड यात्रा)</string>
     <string name="notif_trip_started_at">यात्रा शुरू: %1$s</string>
-    <string name="notif_tap_to_open">क्रैशगार्ड खोलने के लिए टैप करें</string>
+    <string name="notif_tap_to_open">रक्षाकवच खोलने के लिए टैप करें</string>
     <string name="action_stop_trip">यात्रा समाप्त करें</string>
     <string name="notif_sharing_title">आपातकालीन लोकेशन शेयरिंग सक्रिय</string>
     <string name="notif_sharing_body">आपातकालीन संपर्कों के साथ लाइव लोकेशन साझा की जा रही है।</string>
@@ -59,7 +59,7 @@
     <string name="perm_bluetooth_limit">इसके बिना ऐप पूछेगा कि क्या आप ड्राइव कर रहे हैं।</string>
 
     <string name="onboard_welcome_title">सड़क सुरक्षा जो आपका ध्यान रखे</string>
-    <string name="onboard_welcome_body">क्रैशगार्ड ड्राइविंग के दौरान संभावित दुर्घटना का पता लगाता है, आपको 45 सेकंड का समय देता है, और जवाब न मिलने पर आपके विश्वसनीय संपर्कों को आपकी लोकेशन भेजता है।</string>
+    <string name="onboard_welcome_body">रक्षाकवच ड्राइविंग के दौरान संभावित दुर्घटना का पता लगाता है, आपको 45 सेकंड का समय देता है, और जवाब न मिलने पर आपके विश्वसनीय संपर्कों को आपकी लोकेशन भेजता है।</string>
     <string name="onboard_privacy_title">गोपनीयता सर्वोपरि</string>
     <string name="onboard_privacy_body">• ड्राइविंग के बाहर कोई लोकेशन ट्रैकिंग नहीं।\n• कैमरा या माइक्रोफ़ोन रिकॉर्डिंग नहीं।\n• मेडिकल जानकारी डिवाइस पर एन्क्रिप्टेड रहती है।\n• लोकेशन शेयरिंग केवल आपात स्थिति में 15 मिनट तक चलती है।</string>
     <string name="onboard_perm_title">स्वचालित क्रैश सुरक्षा सक्षम करें</string>

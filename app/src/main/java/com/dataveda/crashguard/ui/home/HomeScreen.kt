@@ -184,7 +184,7 @@ fun HomeScreen(
                                     }
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(
-                                            text = profile.name.ifBlank { "CrashGuard Driver" },
+                                            text = profile.name.ifBlank { "RakshaKavach Driver" },
                                             style = MaterialTheme.typography.titleLarge,
                                             color = Color.White,
                                         )

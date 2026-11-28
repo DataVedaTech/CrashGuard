@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CrashGuard</string>
+    <string name="app_name">RakshaKavach</string>
     <string name="app_tagline">Automatic road-crash detection &amp; emergency alert</string>
 
     <!-- Disclaimers (Spec section 16) -->
-    <string name="disclaimer_primary">CrashGuard is a safety-assistance tool. It does not replace emergency services, professional medical care, or vehicle safety systems.\n\nIn a life-threatening emergency, call 112 immediately.</string>
+    <string name="disclaimer_primary">RakshaKavach is a safety-assistance tool. It does not replace emergency services, professional medical care, or vehicle safety systems.\n\nIn a life-threatening emergency, call 112 immediately.</string>
     <string name="disclaimer_secondary">Automatic crash detection may not detect every crash and may occasionally produce false alerts. Keep your phone charged, enabled, and securely mounted while driving.</string>
 
     <!-- Notification channels -->
@@ -18,7 +18,7 @@
     <string name="notif_trip_active">Crash protection active</string>
     <string name="notif_trip_active_sim">Crash protection active (Simulated trip)</string>
     <string name="notif_trip_started_at">Trip started at %1$s</string>
-    <string name="notif_tap_to_open">Tap to open CrashGuard</string>
+    <string name="notif_tap_to_open">Tap to open RakshaKavach</string>
     <string name="action_stop_trip">End trip</string>
     <string name="notif_sharing_title">Emergency location sharing active</string>
     <string name="notif_sharing_body">Sharing live location with emergency contacts. Tap to manage or stop.</string>
@@ -33,7 +33,7 @@
     <string name="soft_check_body">Tap “Need help” to alert your emergency contacts.</string>
 
     <string name="warn_location_title">Location unavailable</string>
-    <string name="warn_location_body">Grant location permission so CrashGuard can verify driving trips and share your crash location.</string>
+    <string name="warn_location_body">Grant location permission so RakshaKavach can verify driving trips and share your crash location.</string>
     <string name="warn_sensor_title">Motion sensor unavailable</string>
     <string name="warn_sensor_body">Accelerometer not detected. Automatic crash detection is limited; manual SOS remains available.</string>
 
@@ -60,11 +60,11 @@
 
     <string name="perm_bluetooth">Bluetooth Car Detection (Optional)</string>
     <string name="perm_bluetooth_why">Recognizes car audio connections to boost driving-detection confidence.</string>
-    <string name="perm_bluetooth_limit">Without Bluetooth permission, CrashGuard asks “Are you driving?” when a trip starts.</string>
+    <string name="perm_bluetooth_limit">Without Bluetooth permission, RakshaKavach asks “Are you driving?” when a trip starts.</string>
 
     <!-- Onboarding -->
     <string name="onboard_welcome_title">Road safety that checks on you</string>
-    <string name="onboard_welcome_body">CrashGuard detects a likely road crash while you drive, gives you 45 seconds to confirm you are safe, and alerts your trusted contacts with your location if you do not respond.</string>
+    <string name="onboard_welcome_body">RakshaKavach detects a likely road crash while you drive, gives you 45 seconds to confirm you are safe, and alerts your trusted contacts with your location if you do not respond.</string>
     <string name="onboard_privacy_title">Privacy by design</string>
     <string name="onboard_privacy_body">• No continuous background tracking when not driving.\n• No camera or microphone recording.\n• Medical profile is encrypted on your device with Android Keystore.\n• Location sharing runs only during an active emergency and stops after 15 minutes or whenever you tap Stop.</string>
     <string name="onboard_perm_title">Enable automatic crash protection</string>

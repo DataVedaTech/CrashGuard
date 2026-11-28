@@ -250,7 +250,7 @@ fun OnboardingScreen(
                             icon = Icons.Default.Lock,
                             accent = AccentIndigo,
                             title = "Zero Camera or Microphone Access",
-                            body = "CrashGuard MVP uses motion sensors and trip GPS only—never recording video or audio.",
+                            body = "RakshaKavach uses motion sensors and trip GPS only—never recording video or audio.",
                         )
                         Card(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),

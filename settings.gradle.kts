@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CrashGuard"
+rootProject.name = "RakshaKavach"
 include(":app")

@@ -32,14 +32,14 @@ object AlertMessageBuilder {
         notes: String = "",
         tz: TimeZone = TimeZone.getDefault(),
     ): String = buildString {
-        appendLine(if (reason == EscalationReason.MANUAL_SOS) "CRASHGUARD SOS ALERT" else "CRASHGUARD EMERGENCY ALERT")
+        appendLine(if (reason == EscalationReason.MANUAL_SOS) "RAKSHAKAVACH SOS ALERT" else "RAKSHAKAVACH EMERGENCY ALERT")
         appendLine()
         appendLine(
             if (reason == EscalationReason.MANUAL_SOS) "An emergency SOS was triggered."
             else "A possible road crash was detected."
         )
         appendLine()
-        appendLine("Name: ${profile.name.ifBlank { "CrashGuard user" }}")
+        appendLine("Name: ${profile.name.ifBlank { "RakshaKavach user" }}")
         appendLine("Time: ${timestamp(detectedAt, tz)}")
         appendLine("Location: ${locationLine(fix, tz)}")
         appendLine("Status: ${statusText(reason)}")
@@ -51,21 +51,21 @@ object AlertMessageBuilder {
         appendLine("Location updates will follow by SMS while sharing is active.")
         appendLine("If they do not respond, call 112.")
         appendLine()
-        append("This is an automated alert from CrashGuard.")
+        append("This is an automated alert from RakshaKavach.")
     }
 
     fun locationUpdate(profile: EmergencyProfile, fix: GeoFix, tz: TimeZone = TimeZone.getDefault()): String =
-        "CRASHGUARD LOCATION UPDATE\n${profile.name.ifBlank { "CrashGuard user" }}: ${fix.mapsLink}\n" +
+        "RAKSHAKAVACH LOCATION UPDATE\n${profile.name.ifBlank { "RakshaKavach user" }}: ${fix.mapsLink}\n" +
             "As of ${timestamp(fix.timeMillis, tz)}"
 
     fun safe(profile: EmergencyProfile, now: Long, tz: TimeZone = TimeZone.getDefault()): String =
-        "CRASHGUARD UPDATE\n${profile.name.ifBlank { "CrashGuard user" }} has marked themselves SAFE " +
+        "RAKSHAKAVACH UPDATE\n${profile.name.ifBlank { "RakshaKavach user" }} has marked themselves SAFE " +
             "at ${timestamp(now, tz)}. Location sharing has stopped."
 
     fun test(profile: EmergencyProfile, now: Long, fix: GeoFix?, tz: TimeZone = TimeZone.getDefault()): String = buildString {
         appendLine(TEST_BANNER)
         appendLine()
-        appendLine("This is how a CrashGuard emergency alert from ${profile.name.ifBlank { "this user" }} will look.")
+        appendLine("This is how a RakshaKavach emergency alert from ${profile.name.ifBlank { "this user" }} will look.")
         appendLine("Time: ${timestamp(now, tz)}")
         appendLine("Location: ${locationLine(fix, tz)}")
         appendLine()
